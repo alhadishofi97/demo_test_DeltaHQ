@@ -1,70 +1,66 @@
 /// <reference types="cypress-xpath"/>
 import searchPage from '@tests/page/search.page';
 import assert from '@tests/helper/assert';
-import DatePicker from '../page/datepicker.page';
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-    // Menghindari kegagalan tes karena pengecualian yang tidak tertangkap
+    // Prevent test failure due to uncaught exceptions
     return false;
 });
 
-
 describe('Scenario 1: Search a property', () => {
-    const datePicker = new DatePicker();
     
     it('should search for a location with specified criteria', () => {
-        // Kunjungi halaman utama
-        
+        // Visit the main page
         searchPage.visit();
-        cy.wait(40000); // Tunggu halaman dimuat jika terdapat captcha
+        cy.wait(50000); // Wait for the page to load if there is a captcha
         cy.get('body').then(($body) => {
             if ($body.find('.uitk-toolbar-button-v2-content').length > 0) {
+                // Click the toolbar button if it exists
                 cy.get('.uitk-toolbar-button-v2-content').click();
             }
         }); 
-        searchPage.closeCookiesPopup(); // Tutup popup cookies
-        searchPage.openSearchInput(); // Buka input pencarian
-        searchPage.enterDestination('Bali'); // Masukkan tujuan pencarian
-        cy.wait(1000); // Tunggu hasil pencarian muncul
-        searchPage.selectDestination('Bali'); // Pilih tujuan dari hasil pencarian
-        searchPage.openDateSelector(); // Buka pemilih tanggal
-        searchPage.selectDates(7, 3); 
-        // cy.xpath("//div[@class='uitk-calendar uitk-calendar-day-selection-circle uitk-no-gridlines']//td[3]/div[.='30']").click({force: true});
-        // cy.xpath("//div[@class='uitk-calendar uitk-calendar-day-selection-circle uitk-no-gridlines']//td[7]/div[.='3']").click( {force: true}); //pilih tanggal end
-        searchPage.closeDateSelector(); // Tutup pemilih tanggal
-        searchPage.increaseAdults(3); // Tambah jumlah dewasa
-        searchPage.search(); // Klik tombol pencarian
-        assert.verifyResults(); // Verifikasi hasil pencarian
+        searchPage.closeCookiesPopup(); // Close the cookies popup
+        searchPage.openSearchInput(); // Open the search input
+        searchPage.enterDestination('Yogyakarta'); // Enter the search destination
+        cy.wait(1000); // Wait for search results to appear
+        searchPage.selectDestination('Yogyakarta'); // Select the destination from search results
+        searchPage.openDateSelector(); // Open the date selector
+        searchPage.selectDates('5', '20'); // Select the dates
+        searchPage.closeDateSelector(); // Close the date selector
+        searchPage.increaseAdults(3); // Increase the number of adults
+        searchPage.search(); // Click the search button
+        assert.verifyResults(); // Verify the search results
     });
 });
 
 describe('Scenario 2: Filter a property', () => {
     beforeEach(() => {
-        // Pre-condition: Buka halaman hasil pencarian
+        // Visit the main page before each test
         searchPage.visit();
-        cy.wait(35000); // Tunggu halaman dimuat jika terdapat captcha
+        cy.wait(50000); // Wait for the page to load if there is a captcha
         cy.get('body').then(($body) => {
             if ($body.find('.uitk-toolbar-button-v2-content').length > 0) {
+                // Click the toolbar button if it exists
                 cy.get('.uitk-toolbar-button-v2-content').click();
             }
-        });
-        searchPage.closeCookiesPopup(); // Tutup popup cookies
-        searchPage.openSearchInput(); // Buka input pencarian
-        searchPage.enterDestination('Yogyakarta'); // Masukkan tujuan pencarian
-        cy.wait(3000); // Tunggu hasil pencarian muncul
-        searchPage.selectDestination('Yogyakarta'); // Pilih tujuan dari hasil pencarian
-        cy.xpath("//div[@class='uitk-calendar uitk-calendar-day-selection-circle uitk-no-gridlines']//td[3]/div[.='30']").click({force: true});
-        cy.xpath("//div[@class='uitk-calendar uitk-calendar-day-selection-circle uitk-no-gridlines']//td[7]/div[.='3']").click( {force: true}); //pilih tanggal end
-        searchPage.increaseAdults(3); // Tambah jumlah dewasa
-        searchPage.search(); // Klik tombol pencarian
+        }); 
+        searchPage.closeCookiesPopup(); // Close the cookies popup
+        searchPage.openSearchInput(); // Open the search input
+        searchPage.enterDestination('Yogyakarta'); // Enter the search destination
+        cy.wait(1000); // Wait for search results to appear
+        searchPage.selectDestination('Yogyakarta'); // Select the destination from search results
+        searchPage.openDateSelector(); // Open the date selector
+        searchPage.selectDates('10', '19'); // Select the dates
+        searchPage.closeDateSelector(); // Close the date selector
+        searchPage.increaseAdults(3); // Increase the number of adults
+        searchPage.search(); // Click the search button
     });
-
     it('should filter properties by Pool under Popular section', () => {
-        // Terapkan filter kolam renang
+        // Apply the pool filter
         searchPage.applyPoolFilter();
-        assert.verifyResults(); // Verifikasi hasil pencarian
-        cy.wait(3000); // Tunggu beberapa saat
-        searchPage.applyPoolFilter(); // Terapkan filter kolam renang lagi
-        assert.verifyResults(); // Verifikasi hasil pencarian
+        cy.wait(3000); // Wait for a moment
+        searchPage.buttonDonePoll()
+        cy.wait(3000); // Wait for a moment
+        assert.verifyResults(); // Verify the search results
     });
 });

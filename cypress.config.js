@@ -8,9 +8,6 @@ module.exports = defineConfig({
   // video: false,
   defaultCommandTimeout: 1000,
   // screenshotOnRunFailure: false,
-  env: {
-    baseURL : 'https://www.vrbo.com'  
-  },
   chromeWebSecurity : false,
   e2e: {
     setupNodeEvents(on, config) {
