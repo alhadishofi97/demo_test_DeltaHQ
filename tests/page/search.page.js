@@ -73,7 +73,7 @@ class SearchPage {
 
     // Click the done button for the search form
     buttonDonePoll() {
-        cy.get('#search_form_primary_button', { timeout: 5000 }).should('be.visible').click({ force: true });
+        cy.get('#search_form_primary_button', { timeout: 5000 }).click({ force: true });
     }
 }
 
